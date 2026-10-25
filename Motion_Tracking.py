@@ -2,7 +2,7 @@ import cv2
 import winsound
 import threading
 
-url = "<url>"        # url of your ip webcam
+url = "<url>"        # url of your ip webcam, use url = 0 for your default webcam
 cap = cv2.VideoCapture(url)
 
 # cap = cv2.VideoCapture(0)
@@ -50,17 +50,18 @@ try:
             contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             for c in contours:
-                if cv2.contourArea(c) < 10000:
+                if cv2.contourArea(c) < 10000:  # Adjust the value according to the size/area of change (i.e. for how much change in motion, you want to capture/detect it)
                     continue
                 x, y, w, h = cv2.boundingRect(c)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            motion = any(cv2.contourArea(c) > 10000 for c in contours)
+            motion = any(cv2.contourArea(c) > 10000 for c in contours)  # Adjust the value according to the size/area of change.
 
             if motion:
                 motion_detected.set()
 
                 cv2.putText(frame, "Motion Detected", (10, 60), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 2)
+                # To save the images of detected motion, uncomment the below code
                 # cv2.imwrite(f"motion_frame_{count}.jpg", frame)
                 # print(f"Saved: motion_frame_{count}.jpg")
 
